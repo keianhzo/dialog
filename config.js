@@ -139,6 +139,17 @@ const config =
 			maxSctpMessageSize              : 262144,
 			// Additional options that are not part of WebRtcTransportOptions.
 			maxIncomingBitrate              : 1500000
+		},
+		// mediasoup PlainTransport options for legacy RTP endpoints (FFmpeg,
+		// GStreamer).
+		// See https://mediasoup.org/documentation/v3/mediasoup/api/#PlainTransportOptions
+		plainTransportOptions :
+		{
+			listenIp :
+			{
+				ip          : '127.0.0.1'
+			},
+			maxSctpMessageSize : 262144
 		}
 	},
 	authKey: process.env.AUTH_KEY || `${__dirname}/certs/perms.pub.pem`

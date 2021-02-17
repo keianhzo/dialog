@@ -317,7 +317,7 @@ async function createExpressApp()
 		{
 			let ccu = 0;
 
-			for (const room in rooms.values()) {
+			for (const room of rooms.values()) {
 				ccu += room.getCCU();
 			}
 
@@ -454,6 +454,7 @@ async function runProtooWebSocketServer()
 		const u = url.parse(info.request.url, true);
 		const roomId = u.query['roomId'];
 		const peerId = u.query['peerId'];
+		const audioMixer = u.query['audioMixer'];
 
 		if (!roomId || !peerId)
 		{
@@ -471,7 +472,7 @@ async function runProtooWebSocketServer()
 		// roomId.
 		queue.push(async () =>
 		{
-			const room = await getOrCreateRoom({ roomId });
+			const room = await getOrCreateRoom({ roomId, audioMixer });
 
 			// Accept the protoo WebSocket connection.
 			const protooWebSocketTransport = accept();
@@ -497,7 +498,7 @@ function getMediasoupWorker()
 	return worker;
 }
 
-async function getOrCreateRoom({ roomId })
+async function getOrCreateRoom({ roomId, audioMixer })
 {
 	let room = rooms.get(roomId);
 
@@ -508,7 +509,7 @@ async function getOrCreateRoom({ roomId })
 
 		const mediasoupWorker = getMediasoupWorker();
 
-		room = await Room.create({ mediasoupWorker, roomId, authKey });
+		room = await Room.create({ mediasoupWorker, roomId, authKey, audioMixer });
 
 		rooms.set(roomId, room);
 		room.on('close', () => rooms.delete(roomId));
